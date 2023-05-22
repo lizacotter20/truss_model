@@ -7,7 +7,6 @@
 	(setq insert (getpoint "\nPick starting point for first polygon edge:"))
 	(setq chir (getstring "\nEnter cw or ccw to determine chirality:"))
 
-	(print "got in the drawing routine")
 	(defun *error* (msg)
 		(if (= msg "Function cancelled")
 			(progn
@@ -28,40 +27,47 @@
 	;useful terms to clean up the calculations
 	(setq H0scale (/ H0 b))
 	(setq Hscale (/ H b))
-	(setq H0sqr (expt H0scale 2))
-	(setq Hsqr (expt Hscale 2))
-	(setq plusminus (- (+ 1 Hsqr) H0sqr))
-	(setq minusplus (+ (- 1 Hsqr) H0sqr))
+	(setq H0sqr (expt H0scale 2.0))
+	(setq Hsqr (expt Hscale 2.0))
+	(setq plusminus (- (+ 1.0 Hsqr) H0sqr))
+	(setq minusplus (+ (- 1.0 Hsqr) H0sqr))
 	(setq param (/ pi n))
-	(print "terms")
+	(print H0scale)
+	(print Hscale)
+	(print H0sqr)
+	(print Hsqr)
+	(print plusminus)
+	(print minusplus)
+	(print param)
 
 	;do the calculations for the Kresling
 	(setq x1 (/ (* (* 2 (sin param)) (- (* (sin param) (expt (- (* (expt (cot param) 2) (expt (csc param) 2)) (expt (- Hsqr H0sqr) 2)) 0.5)) (cos param))) (+ plusminus (* minusplus (cos (* 2 param))))))
+	(print x1)
 	(setq x2 (/ (* (* 2 (sin param)) (- (* (sin param) (expt (- (* (expt (cot param) 2) (expt (csc param) 2)) (expt (- Hsqr H0sqr) 2)) 0.5)) (cos param))) (+ minusplus (* plusminus (cos (* 2 param))))))
+	(print x2)
+	(print "exes")
 	(setq denom (+ (expt x2 2) 1))
+	(print "denom")
 	(setq c (/ (* b (expt (+ (+ (* H0sqr (expt denom 2)) (* (* (expt x2 3) (cot param)) (+ (* x2 (cot param)) 2))) (expt x2 2)) 0.5)) denom))
+	(print "c")
 	(setq a (* b (expt (+ H0sqr (/ (* (expt x2 2) (expt (csc param) 2)) denom)) 0.5)))
+	(print "a")
 	(setq phi1 (* 2 (atan x1)))
 	(setq phi0 (* 2 (atan x2)))
-	(print "got here?")
+	(print "phis")
 	(print (car insert))
 	(print (cadr insert))
 	(print (caddr insert))
+	(print "calculations")
 
 	;calculate node locations
 	;bottom nodes
 	(setq p1 (list (+ (* b (cos 0)) (car insert)) (+ (* b (sin 0)) (cadr insert)) (caddr insert)))
-	(print "made one point")
 	(setq p2 (list (+ (* b (cos (/ pi 3))) (car insert)) (+ (* b (sin (/ pi 3))) (cadr insert)) (caddr insert)))
-	(print "made p2")
 	(setq p3 (list (+ (* b (cos (/ (* 2 pi) 3))) (car insert)) (+ (* b (sin (/ (* 2 pi) 3))) (cadr insert)) (caddr insert)))
-	(print "made p3")
 	(setq p4 (list (+ (* b (cos pi)) (car insert)) (+ (* b (sin pi)) (cadr insert)) (caddr insert)))
-	(print "made p4")
 	(setq p5 (list (+ (* b (cos (/ (* 4 pi) 3))) (car insert)) (+ (* b (sin (/ (* 4 pi) 3))) (cadr insert)) (caddr insert)))
-	(print "made p5")
 	(setq p6 (list (+ (* b (cos (/ (* 5 pi) 3))) (car insert)) (+ (* b (sin (/ (* 5 pi) 3))) (cadr insert)) (caddr insert)))
-	(print "made the bottom nodes")
 	;top nodes
 	(setq p7 (list (+ (* b (cos (+ 0 phi1))) (car insert)) (+ (* b (sin (+ 0 phi1))) (cadr insert)) (+ (caddr insert) H)))
 	(setq p8 (list (+ (* b (cos (+ (/ pi 3) phi1))) (car insert)) (+ (* b (sin (+ (/ pi 3) phi1))) (cadr insert)) (+ (caddr insert) H)))
@@ -69,7 +75,6 @@
 	(setq p10 (list (+ (* b (cos (+ pi phi1))) (car insert)) (+ (* b (sin (+ pi phi1))) (cadr insert)) (+ (caddr insert) H)))
 	(setq p11 (list (+ (* b (cos (+ (/ (* 4 pi) 3) phi1))) (car insert)) (+ (* b (sin (+ (/ (* 4 pi) 3) phi1))) (cadr insert)) (+ (caddr insert) H)))
 	(setq p12 (list (+ (* b (cos (+ (/ (* 5 pi) 3) phi1))) (car insert)) (+ (* b (sin (+ (/ (* 5 pi) 3) phi1))) (cadr insert)) (+ (caddr insert) H)))
-	(print "finished with nodes")
 
 	(print "POINTS POINTS")
 	(print p1)
@@ -93,41 +98,31 @@
 	(setq hole_radius 0.03)
 	(setq hole_depth 0.04)
 	(setq plate_thickness 0.06)
-	"""
-	(if (= chir "ccw")
-		(progn
-			;(command "rotate" (entlast) "" heightpt (* phi0 (/ 180 pi)))
-			(command "_3dpoly" p1 p12 p2 p7 p3 p8 p4 p9 p5 p10 p6 p11 p1 *cancel*)
-			
-		)
-		(progn
-			;(command "rotate" (entlast) "" heightpt (- 180 (* phi0 (/ 180 pi))))
-			(command "_3dpoly" p1 p7 p6 p12 p5 p11 p4 p10 p3 p9 p2 p8 p1 *cancel*)
-			(setq creases (ssget "L"))
-			;(command "_circle" p1 bar_radius)
-			;(command "_rotate3d" (entlast) "" "x" p1 p1 p7)
-			;(command "_3drotate" (entlast) "" p1 "x" 90)
-			;(command "_sweep" (enlast) "" creases)
-			
-		)
-	)
-	"""
+	(setq insert2 (list (car insert) (cadr insert) (- (cadr insert) (/ plate_thickness 2))))
 
 	;make the top and bottom plates 
 	(setq rhole (* (/ 2.0 3.0) b))
+	;middle cylinder
 	(command "_view" "TOP")
-	(command "_circle" insert rhole)
+	(command "_circle" insert2 rhole)
+	;(setq circle1 (ssget "L"))
+	;(command "_extrude" circle1 "" 0.1)
+	;(setq cyl (ssget "L"))
 	(command "_extrude" (entlast) "" 0.1)
 	(setq cyl (ssget "L"))
-	(setq bufferpt (list (+ (+ (car p1) bar_radius) (/ plate_thickness 2)) (cadr p1) (caddr p1)))
-	(command "_polygon" n insert "I" bufferpt)
+
+	;make the plate 
+	(command "_polygon" n insert "I" p1)
 	(setq poly (ssget "L"))
+
+	;for some reason the polygon interferes with the drawing of the magnet holes (and vice versa), so put it in a layer and hide it for now
 	(command "_layer" "_n" "polylay" "")
 	(command "_layer" "_color" 4 "polylay" "")
 	(command "_change" (entlast) "" "_p" "_la" "polylay" "")
 	(command "_layer" "off" "polylay" "")
+	;make a selection set for all the cylinders (that will become magnet holes)
 	(setq holes (ssadd))
-	(setq holept (list (- (car p1) 0.1) (cadr p1) (+ (caddr p1) (- plate_thickness hole_depth))))
+	(setq holept (list (- (car p1) 0.1) (cadr p1) (+ (caddr p1) (- (- plate_thickness hole_depth) (/ plate_thickness 2)))))
 	(command "_circle" holept hole_radius)
 	(command "_extrude" (entlast) "" 0.1)
 	(ssadd (entlast) holes)
@@ -135,78 +130,49 @@
 		(command "rotate" (entlast) "" insert "C" (/ 360.0 n))
 		(ssadd (entlast) holes)
 	)
+	;turn the layer with the polyogn back on
 	(command "_layer" "on" "polylay" "")
-	
-	;(setq cyls (ssget "L"))
-	;(setq bufferpt (list (+ (+ (car p1) bar_radius) (/ plate_thickness 2)) (cadr p1) (caddr p1)))
-	(print "BUFFER")
-	(print bufferpt)
-	(print "HOLEPT")
-	(print holept)
-	;(command "_polygon" n insert "I" bufferpt)
 
+	;extrude the plate, move such that the xy plane halves it laterally, and subtract the holes
 	(command "_extrude" poly "" plate_thickness)
+	(command "_move" (entlast) "" insert insert2)
 	(command "_subtract" (entlast) "" cyl holes"")
 	(setq plate (ssget "L"))
-	;(setq liza (+ heehehehe 2))
-	;(setq plate (ssget "L"))
-	;(setq ptList (list p1 p2))
-	;(setq edge (ssget "F" ptList))
-	
-	;(print p1)
-	;(print bottom_p1)
-	;(command "_filletedge" p1 p2 p3 p4 p5 p6 "" "R" (/ plate_thickness 2) "" "")
-		;(command "_filletedge" "L" p1 "" "R" (/ plate_thickness 2) "" "")
-	;(command "_line" p1 insert)
-	;(command "_line" bottom_p1 insert)
 
-	;fillet the edges of the bottom face
+	;make cyclinders all around the polygon
+	(command "_cylinder" p1 bar_radius "A" p2)
+	(ssadd (entlast) plate)
+	(repeat (- n 1)
+		(command "rotate" (entlast) "" insert "C" (/ 360.0 n))
+		(ssadd (entlast) plate)
+	)
+
+	;make spheres at the points of the polygon
+	(command "_sphere" p1 bar_radius)
+	(ssadd (entlast) plate)
+	(repeat (- n 1)
+		(command "rotate" (entlast) "" insert "C" (/ 360.0 n))
+		(ssadd (entlast) plate)
+	)
+
+	;fillet center hole edges
 	(command "_view" "BOTTOM")
-	;(setq bottom_p1 (list (car bufferpt) (cadr bufferpt) (- (caddr bufferpt) plate_thickness)))
-	(command "_filletedge" "L" bufferpt "N" "" "R" (/ plate_thickness 2) "" "")
-	(setq bottomcirclept (list (+ (car insert) rhole) (cadr insert) (caddr insert)))
+	(setq bottomcirclept (list (+ (car insert) rhole) (cadr insert) (caddr insert2)))
 	(command "_filletedge" "L" bottomcirclept "N" "" "R" (/ plate_thickness 2) "" "")
-	;fillet the edges of the top face
 	(command "_view" "TOP")
-	(setq top_p1 (list (car bufferpt) (cadr bufferpt) (+ (caddr bufferpt) plate_thickness)))
-	(command "_filletedge" "L" top_p1 "N" "" "R" (/ plate_thickness 2) "" "")
-	(setq topcirclept (list (+ (car insert) rhole) (cadr insert) (+ (caddr insert) plate_thickness)))
+	(setq topcirclept (list (+ (car insert) rhole) (cadr insert) (+ (caddr insert2) plate_thickness)))
 	(command "_filletedge" "L" topcirclept "N" "" "R" (/ plate_thickness 2) "" "")
-	(command "_ucs" "W")
+
+	(command "_union" plate "")
 
 	;copy plate to the appropriate height
 	(setq heightpt (list (car insert) (cadr insert) (+ (caddr insert) H)))
-	(setq heightpt2 (list (car insert) (cadr insert) (+ (caddr insert) (* 2 H))))
-	
 	(command "copy" plate "" insert heightpt "")
 	(setq top_plate (entlast))
 	(command "_rotate3d" plate "" "x" insert 180 "")
-	
 
-	
-	(if (= chir "ccw")
-		(progn
-			(command "rotate" top_plate "" heightpt (* phi0 (/ 180 pi)))
-			(command "_3dpoly" p1 p12 p2 p7 p3 p8 p4 p9 p5 p10 p6 p11 p1 *cancel*)
-			
-		)
-		(progn
-			(command "rotate" top_plate "" heightpt (- 180 (* phi0 (/ 180 pi))))
-			(command "_view" "TOP")
-			(command "_3dpoly" p1 p7 p6 p12 p5 p11 p4 p10 p3 p9 p2 p8 p1 *cancel*)
-			(setq creases (ssget "L"))
-			(command "_circle" p1 bar_radius)
-			(command "_rotate3d" (entlast) "" "x" p1 p1 p7)
-			;(command "_3drotate" (entlast) "" p1 "x" 90)
-			(command "_sweep" (entlast) "" creases)
-			
-		)
-	)
-
-	
-
-	;connect nodes based on chirality 
-	"""
+	;make the mountains and valleys
+	;maybe try rotation to clean this up
 	(if (= chir "ccw")
 		(progn
 			(command "rotate" (entlast) "" heightpt (* phi0 (/ 180 pi)))
@@ -243,44 +209,6 @@
 			(command "_cylinder" p6 bar_radius "A" p10)
 		)
 	)
-	"""
-"""
-	(if (= chir "ccw")
-		(progn
-			(command "rotate" (entlast) "" heightpt (* phi0 (/ 180 pi)))
-			;mountains
-			(command "_line" p1 p7 *Cancel*)
-			(command "_line" p2 p8 *Cancel*)
-			(command "_line" p3 p9 *Cancel*)
-			(command "_line" p4 p10 *Cancel*)
-			(command "_line" p5 p11 *Cancel*)
-			(command "_line" p6 p12 *Cancel*)
-			;valleys
-			(command "_line" p1 p8 *Cancel*)
-			(command "_line" p2 p9 *Cancel*)
-			(command "_line" p3 p10 *Cancel*)
-			(command "_line" p4 p11 *Cancel*)
-			(command "_line" p5 p12 *Cancel*)
-			(command "_line" p6 p7 *Cancel*)
-		)
-		(progn
-			(command "rotate" (entlast) "" heightpt (- 180 (* phi0 (/ 180 pi))))
-			;mountains
-			(command "_line" p1 p12 *Cancel*)
-			(command "_line" p2 p7 *Cancel*)
-			(command "_line" p3 p8 *Cancel*)
-			(command "_line" p4 p9 *Cancel*)
-			(command "_line" p5 p10 *Cancel*)
-			(command "_line" p6 p11 *Cancel*)
-			;valleys
-			(command "_line" p1 p11 *Cancel*)
-			(command "_line" p2 p12 *Cancel*)
-			(command "_line" p3 p7 *Cancel*)
-			(command "_line" p4 p8 *Cancel*)
-			(command "_line" p5 p9 *Cancel*)
-			(command "_line" p6 p10 *Cancel*)
-		)
-	)
-	"""
-	
+
+
 )
