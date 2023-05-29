@@ -61,14 +61,14 @@ trussmodel : dialog { label = "Truss Model";
 				value = 0;
 			}
 
-			: edit_box {
-				key = "z";
-				label = "z";
-				alignment = right;
-				edit_limit = 10;
-				edit_width = 10;
-				value = 0;
-			}
+			//: edit_box {
+			//	key = "z";
+			//	label = "z";
+			//	alignment = right;
+			//	edit_limit = 10;
+			//	edit_width = 10;
+			//	value = 0;
+			//}
 		}
 		// want to make this on the right side of the box
 		: button {

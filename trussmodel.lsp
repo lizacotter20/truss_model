@@ -46,13 +46,13 @@
 			)
 			(set_tile "y" ystrtruss)
 		)
-		(if (= zstrtruss nil)
-			(progn
-				(action_tile "z" "(setq zstrtruss $value)")
-				(setq zstrtruss "0")
-			)
-			(set_tile "z" zstrtruss)
-		)
+		;(if (= zstrtruss nil)
+		;	(progn
+		;		(action_tile "z" "(setq zstrtruss $value)")
+		;		(setq zstrtruss "0")
+		;	)
+		;	(set_tile "z" zstrtruss)
+		;)
 
 		;update string values with the values in the boxes, if they've been changed
 		(action_tile "H" "(setq Hstrtruss $value)")
@@ -61,10 +61,10 @@
 		(action_tile "b" "(setq bstrtruss $value)")
 		(action_tile "x" "(setq xstrtruss $value)")
 		(action_tile "y" "(setq ystrtruss $value)") 
-		(action_tile "z" "(setq zstrtruss $value)") 
+		;(action_tile "z" "(setq zstrtruss $value)") 
 
 		;set the insertion point to what is in the x and y boxes
-		(setq insert (list (distof (get_tile "x")) (distof (get_tile "y")) (distof (get_tile "z"))))
+		(setq insert (list (distof (get_tile "x")) (distof (get_tile "y")))) ;(distof (get_tile "z"))))
 
 		;remember which radio button was chosen last time
 		(cond
@@ -96,7 +96,7 @@
 				(setq insert (getpoint))
 				(setq xstrtruss (rtos (car insert)))
 				(setq ystrtruss (rtos (cadr insert)))
-				(setq zstrtruss (rtos (caddr insert)))
+				;(setq zstrtruss (rtos (caddr insert)))
 			)
 		)
 	)
@@ -114,7 +114,7 @@
 			(setq b (distof bstrtruss))
 		
 			;get the latest point from the box
-			(setq insert (list (distof xstrtruss) (distof ystrtruss) (distof zstrtruss)))
+			(setq insert (list (distof xstrtruss) (distof ystrtruss))) ;(distof zstrtruss)))
 
 			(print H)
 			(print H0)
