@@ -177,7 +177,7 @@
 	;maybe try rotation to clean this up
 	(if (= chir "ccw")
 		(progn
-			(command "rotate" (entlast) "" heightpt (* phi0 (/ 180 pi)))
+			(command "rotate" (entlast) "" heightpt (- 180 (* phi0 (/ 180 pi))))
 			;mountains
 			(command "_cylinder" p1 bar_radius "A" p7)
 			(command "_cylinder" p2 bar_radius "A" p8)
@@ -212,6 +212,6 @@
 		)
 	)
 
-
+	(print chir)
 
 )	
