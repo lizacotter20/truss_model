@@ -114,7 +114,7 @@
 			(setq b (distof bstrtruss))
 		
 			;get the latest point from the box
-			(setq insert (list (distof xstrtruss) (distof ystrtruss))) ;(distof zstrtruss)))
+			(setq insert (list (distof xstrtruss) (distof ystrtruss) 0)) ;(distof zstrtruss)))
 
 			(print H)
 			(print H0)
