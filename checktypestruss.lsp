@@ -16,6 +16,8 @@
 		;((and (or (= (+ Hsqr H0sqr) 1) (= (- Hsqr H0sqr) -1)) (= (atoi (get_tile "n")) 4)) (set_tile "error" "ERROR: 1 +/- H^2 -/+ H0^2 + (1 -/+ H^2 +/- H0^2)cos(2pi/n) cannot equal 0"))
 		((or (< (+ plusminus (* minusplus (cos (* 2 param)))) (expt 1 -10)) (<  (+ minusplus (* plusminus (cos (* 2 param)))) (expt 1 -10))) (set_tile "error" "ERROR: 1 +/- (H/b)^2 -/+ (H0/b)^2 + (1 -/+ (H/b)^2 +/- (H0/b)^2)cos(2pi/n) cannot equal 0"))
 		((not (and (distof (get_tile "x")) (distof (get_tile "y")))) (set_tile "error" "ERROR: Please enter a real value for x and y"))
+		((<= (distof (get_tile "d_r")) 0.05) (set_tile "error" "ERROR: Rod diameter must be greater than 0.05 due to the size of the magnets"))
+		((>= (distof (get_tile "d_c")) (abs (/ (distof (get_tile "b")) (tan (/ pi (atoi (get_tile "n"))))))) (set_tile "error" "ERROR: the diameter cannot exceed the diameter of the inscribed circle"))
 		;((and (= (get_tile "hole") "1") (not (distof (get_tile "diameter")))) (set_tile "error" "ERROR: Please enter a real value for the diameter"))
 		;((and (= (get_tile "hole") "1") (<= (distof (get_tile "diameter")) 0)) (set_tile "error" "ERROR: the diameter has to be greater than 0"))
 		;((and (= (get_tile "hole") "1") (>= (distof (get_tile "diameter")) (abs (/ (distof (get_tile "b")) (tan (/ pi (atoi (get_tile "n")))))))) (set_tile "error" "ERROR: the diameter cannot exceed the diameter of the inscribed circle"))

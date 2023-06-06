@@ -36,6 +36,20 @@ trussmodel : dialog { label = "Truss Model";
 			edit_width = 10;
 			key = "b";
 		}
+		: edit_box { 
+			label = "Enter diameter of rods:";
+			alignment = right;
+			edit_limit = 10;
+			edit_width = 10;
+			key = "d_r";
+		}
+		: edit_box { 
+			label = "Enter diameter of center hole:";
+			alignment = right;
+			edit_limit = 10;
+			edit_width = 10;
+			key = "d_c";
+		}
 	}
 	: boxed_column {label = "Insertion point";	
 		: row {
@@ -87,6 +101,13 @@ trussmodel : dialog { label = "Truss Model";
 		: radio_button {
 			key = "ccw";
 			label = "Counterclockwise";
+		}
+	}
+	: boxed_column {
+		label = "More Options";
+		: toggle {
+			key = "folded";
+			label = "Show folded state?";
 		}
 	}
 

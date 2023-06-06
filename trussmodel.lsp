@@ -32,6 +32,14 @@
 			(action_tile "b" "(setq bstrtruss $value)")
 			(set_tile "b" bstrtruss)
 		)
+		(if (= d_rstrtruss nil)
+			(action_tile "d_r" "(setq d_rstrtruss $value)")
+			(set_tile "d_r" d_rstrtruss)
+		)
+		(if (= d_cstrtruss nil)
+			(action_tile "d_c" "(setq d_cstrtruss $value)")
+			(set_tile "d_c" d_cstrtruss)
+		)
 		(if (= xstrtruss nil)
 			(progn
 				(action_tile "x" "(setq xstrtruss $value)")
@@ -59,6 +67,8 @@
 		(action_tile "H0" "(setq H0strtruss $value)") 
 		(action_tile "n" "(setq nstrtruss $value)")
 		(action_tile "b" "(setq bstrtruss $value)")
+		(action_tile "d_r" "(setq d_rstrtruss $value)")
+		(action_tile "d_c" "(setq d_cstrtruss $value)")
 		(action_tile "x" "(setq xstrtruss $value)")
 		(action_tile "y" "(setq ystrtruss $value)") 
 		;(action_tile "z" "(setq zstrtruss $value)") 
@@ -76,6 +86,13 @@
 		;radio buttons
 		(action_tile "cw" "(setq chir_truss \"cw\")")
 		(action_tile "ccw" "(setq chir_truss \"ccw\")")
+
+		;remember whether the user previously had the show folded state option turned on
+		(if (= folded_truss nil)
+			(action_tile "folded" "(setq layerstrad $value)")
+			(set_tile "folded" folded_truss)
+		)
+		(action_tile "folded" "(setq folded_truss $value)")
 
 		;in order for the user to be able to press ok, make sure the design constrtrussaints are not violated and that the parameter types are correct
 		(action_tile "accept" "(checktypestruss)")
@@ -112,6 +129,8 @@
 			(setq H0 (distof H0strtruss))
 			(setq n (atoi nstrtruss))
 			(setq b (distof bstrtruss))
+			(setq d_r (distof d_rstrtruss))
+			(setq d_c (distof d_cstrtruss))
 		
 			;get the latest point from the box
 			(setq insert (list (distof xstrtruss) (distof ystrtruss) 0)) ;(distof zstrtruss)))
@@ -120,11 +139,14 @@
 			(print H0)
 			(print n)
 			(print b)
+			(print d_r)
+			(print d_c)
 			(print insert)
 			(print chir_truss)
+			(print folded_truss)
 
 			;call appropriate drawing routine based on crease pattern type
-			(drawtrussmodel H H0 n b insert chir_truss)
+			(drawtrussmodel H H0 n b d_r d_c insert chir_truss folded_truss)
 		)
 	)
 	(princ)
