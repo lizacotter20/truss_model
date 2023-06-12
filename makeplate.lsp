@@ -1,4 +1,4 @@
-(defun makeplate (insertp b param n d_r d_c p1 p2 / bar_radius hole_radius hole_depth plate_thickness 
+(defun makeplate (insertp b param n d_r d_c p1 p2 phi0 / bar_radius hole_radius hole_depth plate_thickness 
 											  insert2 rad halfwindowside bottomleft topright cyl_radius cyl poly holes holept plate bottomcirclept negbottomcirclept topcirclept)
 
 	;zoom to drawing area (with margin room)
@@ -48,11 +48,21 @@
 	(setq holept (list (+ (car insertp) (- rad (* hole_radius (csc beta)))) (cadr insertp) (+ (caddr insertp) (- (- plate_thickness hole_depth) (/ plate_thickness 2)))))
 	(command "_circle" holept hole_radius)
 	(command "_extrude" (entlast) "" (* 2 plate_thickness))
+	(if (not (= phi0 0.0))
+			(progn
+				(print "HALLLLLOOOOOOO  ")
+				(print phi0)
+				(setq phi_degree (* -1 (* phi0 (/ 180 pi))))
+				(command "_rotate3d" (entlast) "" "z" insertp phi_degree "")
+			)
+	)
 	(ssadd (entlast) holes)
 	(repeat (- n 1)
 		(command "rotate" (entlast) "" insertp "C" (/ 360.0 n))
 		(ssadd (entlast) holes)
 	)
+	
+	(print phi0)
 	;turn the layer with the polyogn back on
 	(command "_layer" "on" "polylay" "")
 
@@ -79,11 +89,10 @@
 	)
 
 	(command "_union" plate "")
-	(setq liza jeffery)
 	(print "HALLO")
 
 	;and subtract the holes
-	(command "_subtract" (entlast) "" cyl holes"")
+	(command "_subtract" (entlast) "" cyl "")
 	
 
 	;fillet center hole edges 
@@ -96,8 +105,12 @@
 	(command "_zoom" bottomleft topright)
 	(setq topcirclept (list (+ (car insertp) cyl_radius) (cadr insertp) (+ (caddr insertp) plate_thickness))) ;
 	(command "_filletedge" "L" topcirclept "" "R" (/ plate_thickness 2) "" "")
-
-	(command "_union" plate "")
+	(print "finsihed filleting?")
+	;(command "_union" plate "")
+	(setq holes holes) 
+	;(print "unioned?")
+	;(print "ATTENIONNNNNNNNNNN  ")
+	;(print (not (= phi0 0.0)))
 
 
 )
