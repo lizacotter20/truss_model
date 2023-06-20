@@ -145,8 +145,26 @@
 			(print chir_truss)
 			(print folded_truss)
 
-			;call appropriate drawing routine based on crease pattern type
-			(drawtrussmodel H H0 n b d_r d_c insert chir_truss folded_truss)
+			;call intermediate routine 
+			;(calldrawing H H0 n b d_r d_c insert chir_truss folded_truss)
+		  	;call drawing routine(s)
+       			(print "about to call routines?") 
+       		(setq angles_H (getangles H H0 n b))
+       		(print (cadr angles_H))
+			(drawtrussmodel H (cadr angles_H) n b d_r d_c insert chir)
+			(if folded
+				(progn
+					(setq rad (/ b (* 2 (sin (/ pi n)))))
+					(setq insert_over (list (+ (car insert) (* 4 rad)) (cadr insert) (caddr insert)))
+				  	(setq minH0 (* b (expt (- Hsqr (expt (cot param) 2)) 0.5)))
+				  	(setq angles_H0 (getangles H H0 n b))
+				  	(setq angles_minH0 (getangles H minH0 n b))
+				  	(if (< H0 minH0)
+						(drawtrussmodel minH0 (car angles_minH0) n b d_r d_c insert_over chir)
+					  	(drawtrussmodel H0 (car angles_H0) n b d_r d_c insert_over chir)
+					)
+				)	
+			)
 		)
 	)
 	(princ)

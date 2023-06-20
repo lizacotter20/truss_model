@@ -1,0 +1,40 @@
+(defun getangles (H H0 n b / H0scale Hscale H0sqr Hsqr plusminus minusplus param twoparam x1 x2 phi1 phi0 p1b p2b p1t p2t pslt plt plate1 magnet_cyls1 heightpt plate2 magnet_cyls2 bar_radius rods)
+	(defun *error* (msg)
+		(if (= msg "Function cancelled")
+			(progn
+				(print "Function was canceled, exploding groups")
+				(command "_ucs" "W")
+				;(command-s "_ungroup" "NA" "panel_and_tab" "")
+				;(command-s "_ungroup" "NA" "first_rot" "")
+			)
+			(progn
+				(print "Error thrown, exploding groups")
+				(command "_ucs" "W")
+				;(command-s "_ungroup" "NA" "panel_and_tab" "")
+				;(command-s "_ungroup" "NA" "first_rot" "")
+			)
+		)
+	)
+	(print "in call routines?") 
+
+	;useful terms to clean up the calculations
+	(setq H0scale (/ H0 b))
+	(setq Hscale (/ H b))
+	(setq H0sqr (expt H0scale 2))
+	(setq Hsqr (expt Hscale 2))
+	(setq plusminus (- (+ 1 Hsqr) H0sqr))
+	(setq minusplus (+ (- 1 Hsqr) H0sqr))
+	(setq param (/ pi n))
+	(setq twoparam (* 2 param))
+
+	;do the calculations for the Kresling
+	(setq x1 (/ (* (* 2 (sin param)) (- (* (sin param) (expt (- (* (expt (cot param) 2) (expt (csc param) 2)) (expt (- Hsqr H0sqr) 2)) 0.5)) (cos param))) (+ plusminus (* minusplus (cos twoparam)))))
+	(setq x2 (/ (* (* 2 (sin param)) (- (* (sin param) (expt (- (* (expt (cot param) 2) (expt (csc param) 2)) (expt (- Hsqr H0sqr) 2)) 0.5)) (cos param))) (+ minusplus (* plusminus (cos twoparam)))))
+	;(setq denom (+ (expt x2 2) 1))
+	;(setq c (/ (* b (expt (+ (+ (* H0sqr (expt denom 2)) (* (* (expt x2 3) (cot param)) (+ (* x2 (cot param)) 2))) (expt x2 2)) 0.5)) denom))
+	;(setq a (* b (expt (+ H0sqr (/ (* (expt x2 2) (expt (csc param) 2)) denom)) 0.5)))
+	(setq phi1 (* 2 (atan x1)))
+	(setq phi0 (* 2 (atan x2)))
+  	(setq angles (list phi0 phi1))
+
+)
