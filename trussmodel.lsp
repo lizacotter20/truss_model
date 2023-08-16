@@ -1,6 +1,6 @@
 (prompt "\nType trussmodel to run.....")
 
-(defun c:trussmodel ( / dcl_id flag p1 H H0 n b)
+(defun c:trussmodel ( / dcl_id flag p1 H H0 n b d_r d_c d_m h_m insert insert_over rad)
 
 	;flag is for discerning whether the dialog was canceled or hidden for starting point selection
 	(setq flag 5)
@@ -40,6 +40,15 @@
 			(action_tile "d_c" "(setq d_cstrtruss $value)")
 			(set_tile "d_c" d_cstrtruss)
 		)
+		(if (= d_mstrtruss nil)
+			(action_tile "d_m" "(setq d_mstrtruss $value)")
+			(set_tile "d_m" d_mstrtruss)
+		)
+		(if (= h_mstrtruss nil)
+			(action_tile "h_m" "(setq h_mstrtruss $value)")
+			(set_tile "h_m" h_mstrtruss)
+		)		
+
 		(if (= xstrtruss nil)
 			(progn
 				(action_tile "x" "(setq xstrtruss $value)")
@@ -69,6 +78,8 @@
 		(action_tile "b" "(setq bstrtruss $value)")
 		(action_tile "d_r" "(setq d_rstrtruss $value)")
 		(action_tile "d_c" "(setq d_cstrtruss $value)")
+		(action_tile "d_m" "(setq d_mstrtruss $value)")
+		(action_tile "h_m" "(setq h_mstrtruss $value)")
 		(action_tile "x" "(setq xstrtruss $value)")
 		(action_tile "y" "(setq ystrtruss $value)") 
 		;(action_tile "z" "(setq zstrtruss $value)") 
@@ -89,7 +100,7 @@
 
 		;remember whether the user previously had the show folded state option turned on
 		(if (= folded_truss nil)
-			(action_tile "folded" "(setq layerstrad $value)")
+			(action_tile "folded" "(setq folded_truss $value)")
 			(set_tile "folded" folded_truss)
 		)
 		(action_tile "folded" "(setq folded_truss $value)")
@@ -131,6 +142,8 @@
 			(setq b (distof bstrtruss))
 			(setq d_r (distof d_rstrtruss))
 			(setq d_c (distof d_cstrtruss))
+			(setq d_m (distof d_mstrtruss))
+			(setq h_m (distof h_mstrtruss))
 		
 			;get the latest point from the box
 			(setq insert (list (distof xstrtruss) (distof ystrtruss) 0)) ;(distof zstrtruss)))
@@ -141,6 +154,8 @@
 			(print b)
 			(print d_r)
 			(print d_c)
+			(print d_m)
+			(print h_m)
 			(print insert)
 			(print chir_truss)
 			(print folded_truss)
@@ -151,18 +166,36 @@
        			(print "about to call routines?") 
        		(setq angles_H (getangles H H0 n b))
        		(print (cadr angles_H))
-			(drawtrussmodel H (cadr angles_H) n b d_r d_c insert chir)
-			(if folded
+       		(if (= chir_truss "ccw")
+       			(drawtrussmodel H (cadr angles_H) n b d_r d_c d_m h_m insert chir_truss)
+       			(drawtrussmodel H (* -1 (cadr angles_H)) n b d_r d_c d_m h_m insert chir_truss)
+       		)
+			
+			(print "HI end draw!!!")
+			(print folded_truss)
+			(if folded_truss
 				(progn
+					(print "HI FOLDED")
 					(setq rad (/ b (* 2 (sin (/ pi n)))))
 					(setq insert_over (list (+ (car insert) (* 4 rad)) (cadr insert) (caddr insert)))
-				  	(setq minH0 (* b (expt (- Hsqr (expt (cot param) 2)) 0.5)))
-				  	(setq angles_H0 (getangles H H0 n b))
-				  	(setq angles_minH0 (getangles H minH0 n b))
-				  	(if (< H0 minH0)
-						(drawtrussmodel minH0 (car angles_minH0) n b d_r d_c insert_over chir)
-					  	(drawtrussmodel H0 (car angles_H0) n b d_r d_c insert_over chir)
-					)
+					(setq angles_H0 (getangles H H0 n b))
+					(print (car angles_H0))
+					(print (cadr angles_H0))
+
+					(if (= chir_truss "ccw")
+       					(drawtrussmodel H0 (car angles_H0) n b d_r d_c d_m h_m insert_over chir_truss)
+       					(drawtrussmodel H0 (* -1 (car angles_H0)) n b d_r d_c d_m h_m insert_over chir_truss)
+       				)
+
+					
+					
+				  	;(setq minH0 (* b (expt (- Hsqr (expt (cot param) 2)) 0.5)))
+				  	
+				  	;(setq angles_minH0 (getangles H minH0 n b))
+				  	;(if (< H0 minH0)
+						;(drawtrussmodel minH0 (car angles_minH0) n b d_r d_c insert_over chir)
+					  	
+					;)
 				)	
 			)
 		)

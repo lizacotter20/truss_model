@@ -1,0 +1,5 @@
+(defun scale (v1 c / scale)
+	;(print "IN SCALE?")
+	(setq scale (list (* c (car v1)) (* c (cadr v1)) (* c (caddr v1))))
+	;(print scale)
+)

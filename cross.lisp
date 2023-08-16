@@ -1,0 +1,6 @@
+(defun cross (v1 v2 / x y z)
+	(setq x (- (* (cadr v1) (caddr v2)) (* (caddr v1) (cadr v2)))) 
+	(setq y (- (* (caddr v1) (car v2)) (* (car v1) (caddr v2))))
+	(setq z (- (* (car v1) (cadr v2)) (* (cadr v1) (car v2))))
+	(setq cross (list x y z))
+)

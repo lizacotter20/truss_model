@@ -50,6 +50,25 @@ trussmodel : dialog { label = "Truss Model";
 			edit_width = 10;
 			key = "d_c";
 		}
+		: row {
+		: text {
+				label = "Enter the magnet dimensions:";
+			}
+			: edit_box { 
+				label = "Diameter:";
+				alignment = right;
+				edit_limit = 10;
+				edit_width = 10;
+				key = "d_m";
+			}
+			: edit_box { 
+				label = "Height:";
+				alignment = right;
+				edit_limit = 10;
+				edit_width = 10;
+				key = "h_m";
+			}
+		}
 	}
 	: boxed_column {label = "Insertion point";	
 		: row {

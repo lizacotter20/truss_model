@@ -1,0 +1,5 @@
+(defun add (v1 v2 / v3)
+	;(print "IN ADD?")
+	(setq v3 (list (+ (car v1) (car v2)) (+ (cadr v1) (cadr v2)) (+ (caddr v1) (caddr v2))))
+	;(print v3)
+)
